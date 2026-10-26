@@ -1,6 +1,6 @@
 # SPEC 01 — Home con feed de la sala
 
-> **Status:** Draft
+> **Status:** Implemented
 > **Depends on:** —
 > **Date:** 2026-10-26
 > **Objective:** Reemplazar la home de `create-next-app` por la pantalla `references/pantallas/feed.dc.html`, replicando su estilo de forma exacta con datos mock.
@@ -36,36 +36,38 @@ El HTML de `references/pantallas/` es la referencia visual, no código a portar.
 No hay persistencia. Nuevo archivo `app/_data/feed.ts` con los tipos y los datos de ejemplo:
 
 ```ts
-export type TipoPublicacion = "logro" | "actividad" | "anuncio";
+export type PostType = "achievement" | "activity" | "announcement";
 
-export interface AutorPublicacion {
-  nombre: string;          // "Mateo" | "Anuncio general"
-  inicial?: string;        // "M"; ausente en anuncios
-  fondo: string;           // "#A9D9E8" | "#CCD8F4"
-  texto: string;           // "#1F7A93" | "#4E72C8"
-  icono?: "megafono";      // solo anuncios
+export interface PostAuthor {
+  name: string;            // "Mateo" | "Anuncio general"
+  initial?: string;        // "M"; ausente en anuncios
+  background: string;      // "#A9D9E8" | "#CCD8F4"
+  color: string;           // "#1F7A93" | "#4E72C8"
+  icon?: "megaphone";      // solo anuncios
 }
 
-export interface Publicacion {
-  id: string;              // "mateo-logro", "mateo-actividad", "anuncio-parque"
-  tipo: TipoPublicacion;
-  autor: AutorPublicacion;
-  hora: string;            // "14:20" — se muestra junto a " · publicado por vos"
-  para: string;            // "familia de Mateo" | "toda la sala"
-  texto: string;
+export interface Post {
+  id: string;              // "mateo-achievement", "mateo-activity", "park-announcement"
+  type: PostType;
+  author: PostAuthor;
+  time: string;            // "14:20" — se muestra junto a " · publicado por vos"
+  audience: string;        // "familia de Mateo" | "toda la sala"
+  body: string;
   likes: number;
-  comentarios: number;
-  foto?: { descripcion: string }; // "Foto · pintando con témperas"
+  comments: number;
+  photo?: { description: string }; // "Foto · pintando con témperas"
 }
 
-export const publicaciones: Publicacion[];
+export const posts: Post[];
 ```
 
-Los tres valores de `tipo` se mapean a los estilos del badge del mockup:
+Los identificadores de código van en inglés (regla de `AGENTS.md`); los strings de UI quedan en español.
 
-- `logro`: fondo `#CFEBD8`, punto y texto `#3E9B6C`, etiqueta `LOGRO`.
-- `actividad`: fondo `#C7E7F1`, punto y texto `#2E89A6`, etiqueta `ACTIVIDAD`.
-- `anuncio`: fondo `#CCD8F4`, punto y texto `#4E72C8`, etiqueta `ANUNCIO`.
+Los tres valores de `type` se mapean a los estilos del badge del mockup:
+
+- `achievement`: fondo `#CFEBD8`, punto y texto `#3E9B6C`, etiqueta `LOGRO`.
+- `activity`: fondo `#C7E7F1`, punto y texto `#2E89A6`, etiqueta `ACTIVIDAD`.
+- `announcement`: fondo `#CCD8F4`, punto y texto `#4E72C8`, etiqueta `ANUNCIO`.
 
 ## Implementation plan
 
@@ -81,21 +83,21 @@ Los tres valores de `tipo` se mapean a los estilos del badge del mockup:
 
 ## Acceptance criteria
 
-- [ ] `/` ya no muestra el contenido de `create-next-app` (logo de Next, textos en inglés ni botones "Deploy Now"/"Documentation").
-- [ ] El sidebar mide 248px, fondo `#FFFDF9`, borde derecho `#ECE0D0` y permanece fijo al hacer scroll del feed.
-- [ ] "Feed" aparece activo con fondo `#FBE3D8` y texto `#D9583C`; los demás ítems usan `#6E6359`.
-- [ ] El botón "Nueva publicación" usa el gradiente `#F4977E → #EE8164`.
-- [ ] El bloque de usuario muestra `Caro Giménez` y `Maestra · Soles`.
-- [ ] El encabezado muestra el kicker, `Buenas, Caro` y `12 niños · martes 17 jun`.
-- [ ] Se listan exactamente 3 posts en el orden logro → actividad (con foto) → anuncio.
-- [ ] Los badges muestran `LOGRO`, `ACTIVIDAD` y `ANUNCIO` con los colores del mockup.
-- [ ] Los contadores de like/comentarios son `3/1`, `5/2` y `8/0`.
-- [ ] Ningún elemento clickeable navega, cambia estado ni dispara errores; los likes no incrementan.
-- [ ] Se usan Fredoka en títulos, nombres e iniciales y Nunito en el resto; no queda Geist ni Arial.
-- [ ] El fondo global es `#F6ECDF` también con `prefers-color-scheme: dark`.
-- [ ] A 1024px o más el layout coincide con `references/screenshots/feed.png`; por debajo no hay scroll horizontal y el sidebar no se muestra.
-- [ ] `npm run lint`, `npx tsc --noEmit` y `npm run build` terminan sin errores.
-- [ ] La consola del navegador no muestra errores ni warnings de hidratación.
+- [x] `/` ya no muestra el contenido de `create-next-app` (logo de Next, textos en inglés ni botones "Deploy Now"/"Documentation").
+- [x] El sidebar mide 248px, fondo `#FFFDF9`, borde derecho `#ECE0D0` y permanece fijo al hacer scroll del feed.
+- [x] "Feed" aparece activo con fondo `#FBE3D8` y texto `#D9583C`; los demás ítems usan `#6E6359`.
+- [x] El botón "Nueva publicación" usa el gradiente `#F4977E → #EE8164`.
+- [x] El bloque de usuario muestra `Caro Giménez` y `Maestra · Soles`.
+- [x] El encabezado muestra el kicker, `Buenas, Caro` y `12 niños · martes 17 jun`.
+- [x] Se listan exactamente 3 posts en el orden logro → actividad (con foto) → anuncio.
+- [x] Los badges muestran `LOGRO`, `ACTIVIDAD` y `ANUNCIO` con los colores del mockup.
+- [x] Los contadores de like/comentarios son `3/1`, `5/2` y `8/0`.
+- [x] Ningún elemento clickeable navega, cambia estado ni dispara errores; los likes no incrementan.
+- [x] Se usan Fredoka en títulos, nombres e iniciales y Nunito en el resto; no queda Geist ni Arial.
+- [x] El fondo global es `#F6ECDF` también con `prefers-color-scheme: dark`.
+- [ ] A 1024px o más el layout coincide con `references/screenshots/feed.png`; por debajo no hay scroll horizontal y el sidebar no se muestra. *(verificado el responsive y los estilos computados; falta la comparación visual humana contra la captura)*
+- [x] `npm run lint`, `npx tsc --noEmit` y `npm run build` terminan sin errores.
+- [x] La consola del navegador no muestra errores ni warnings de hidratación.
 
 ## Decisions
 
@@ -109,6 +111,8 @@ Los tres valores de `tipo` se mapean a los estilos del badge del mockup:
 - **No:** `postcss.config`. Tailwind 4 ya entra por la regla Turbopack de `next.config.ts`.
 - **No:** borrar los assets de `public/` que queden sin uso. Limpieza fuera de alcance.
 - **No:** tests automatizados ni snapshot visual con umbral de píxeles. La verificación es captura manual comparada con `references/screenshots/feed.png`.
+- **Sí:** identificadores de código en inglés (`Post`, `PostType`, `posts`). Lo exige `AGENTS.md`; solo los textos visibles quedan en español.
+- **Sí:** agregar `references/**` a `globalIgnores` en `eslint.config.mjs`. `npm run lint` fallaba por el runtime vendido del mockup (`support.js`), ajeno a la app.
 
 ## Risks
 

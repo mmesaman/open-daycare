@@ -1,14 +1,6 @@
-<!-- BEGIN:nextjs-agent-rules -->
-
-## This is NOT the Next.js you know
-
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
-
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
 # Open Daycare
 
-Spanish-language daycare (guardería) app: staff feed with children management, plus a parent view. The app is still the `create-next-app` starter — `app/page.tsx` is boilerplate; real screens must be built.
+Spanish-language daycare (guardería) app: staff feed with children management, plus a parent view. The `/` feed is implemented from `references/pantallas/feed.dc.html`; it uses mock data and has no auth or database.
 
 ## Commands
 
@@ -26,10 +18,11 @@ Spanish-language daycare (guardería) app: staff feed with children management, 
 
 ## Layout
 
-- `app/` — App Router entry (`layout.tsx`, `page.tsx`, `globals.css`). `@/*` maps to the repo root.
+- `app/` — App Router entry (`layout.tsx`, `page.tsx`, `globals.css`). `@/*` maps to SI repo root.
+- `app/_components/` and `app/_data/` are private folders (not routes): sidebar, post card, icons, and the typed mock feed.
 - `references/pantallas/*.dc.html` — canonical UI mockups: self-contained static HTML (with `support.js`) using Fredoka/Nunito and a warm cream palette. `references/screenshots/` shows the expected rendering. Port these screens to React + Tailwind; never import or ship the `.dc.html` files.
-- UI copy and domain terms are Spanish (`niño`, `publicación`, "GESTIÓN"), some with accents lost in the mockup encoding. Keep user-facing strings in Spanish.
-- `.agents/skills/spec` (pinned in `skills-lock.json`) provides the `/spec` workflow; specs belong in `specs/` (not created yet).
+- UI copy and domain terms are Spanish (`niño`, `publicación`, "GESTIÓN"), some with accents lost in the mockup encoding. Keep user-facing strings in Spanish; code identifiers in English.
+- `.agents/skills/spec` (pinned in `skills-lock.json`) provides the `/spec` workflow; specs live in `specs/`. There is no `spec-impl` skill installed — implement specs manually.
 
 ## MCP
 
@@ -40,7 +33,39 @@ Spanish-language daycare (guardería) app: staff feed with children management, 
 
 - /spec Usaremos esta habilidad para crear las especificaciones
 - /spec-impl Usaremos esta habilidad para crear las implementaciones
+- `spec-verifier` (`.opencode/agents/spec-verifier.md`) audita el `Acceptance criteria` de un spec con evidencia de código, Context7 y Playwright, y marca los checks. Solo escribe en `specs/*.md`; usa Qwen3.6 Plus (visión) para comparar capturas. Se invoca seleccionándolo como agente o pidiendo al agente principal que lance el subagente `spec-verifier` con la ruta del spec.
 
 ## Reglas de codigo
 
 - Usar codigo limpio, nombres y variables en ingles
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
+
+<!-- BEGIN:nextjs-agent-feedback -->
+
+## Report Next.js feedback
+
+The project owner enabled `experimental.agentFeedback`, authorizing this feedback pass. When enabled, `next dev` writes this block and restores it if removed. Commit `AGENTS.md` with your work to keep the tree clean.
+
+During the current user request, retain anonymized facts as feedback candidates for meaningful or recurring Next.js issues:
+
+- Crashes, hangs, OOMs, or unexpected slowness
+- Incorrect behavior, output, errors, or diagnostics
+- Missing, unclear, or conflicting documentation
+- Unexpected CLI, codemod, Skill, or upgrade behavior and non-obvious workarounds
+
+Continue the current user request without reporting immediately. Routine debugging is not feedback. Verify changes before retaining them as feedback candidates. Never retain code, logs, paths, URLs, secrets, personal information, or project-specific data.
+
+Retain qualifying friction even if it is later fixed or worked around; record the final outcome during the reporting pass.
+
+Before the final response, run one reporting pass. If candidates remain, from this file's directory run `npx --no-install next internal agent-feedback-instructions` once without piping or truncating its output. Follow its output or error guidance. If a network sandbox blocks it, retry with network access; if it still returns no output, continue normally.
+
+<!-- END:nextjs-agent-feedback -->
