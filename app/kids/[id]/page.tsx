@@ -1,5 +1,8 @@
+'use client';
+
 import Link from 'next/link';
-import { getKidById, PARENT_STATUS_BADGE, PARENT_STATUS_LABEL } from '@/app/_data/kids';
+import { use, useEffect, useState } from 'react';
+import { kids, PARENT_STATUS_BADGE, PARENT_STATUS_LABEL, type Kid } from '@/app/_data/kids';
 import { Sidebar } from '@/components/shared/Sidebar';
 import { MobileNav } from '@/components/shared/MobileNav';
 import { ChevronLeftIcon, AlertTriangleIcon, EditIcon } from '@/components/shared/icons';
@@ -8,9 +11,25 @@ interface KidProfileProps {
   params: Promise<{ id: string }>;
 }
 
-export default async function KidProfilePage({ params }: KidProfileProps) {
-  const { id } = await params;
-  const kid = getKidById(id);
+function findKid(id: string): Kid | undefined {
+  const fromMock = kids.find((k) => k.id === id);
+  if (fromMock) return fromMock;
+  if (typeof window === 'undefined') return undefined;
+  try {
+    const stored = localStorage.getItem('open-daycare:added-kids');
+    if (stored) {
+      const added = JSON.parse(stored) as Kid[];
+      return added.find((k) => k.id === id);
+    }
+  } catch {
+    // ignore
+  }
+  return undefined;
+}
+
+export default function KidProfilePage({ params }: KidProfileProps) {
+  const { id } = use(params);
+  const [kid, setKid] = useState<Kid | undefined>(() => findKid(id));
 
   if (!kid) {
     return (
