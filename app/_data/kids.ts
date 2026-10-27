@@ -271,7 +271,21 @@ export const kids: Kid[] = [
 ];
 
 export function getKidById(id: string): Kid | undefined {
-  return kids.find((k) => k.id === id);
+  const fromMock = kids.find((k) => k.id === id);
+  if (fromMock) return fromMock;
+  if (typeof window !== 'undefined') {
+    try {
+      const stored = localStorage.getItem('open-daycare:added-kids');
+      if (stored) {
+        const added = JSON.parse(stored) as Kid[];
+        const found = added.find((k) => k.id === id);
+        if (found) return found;
+      }
+    } catch {
+      // ignore
+    }
+  }
+  return undefined;
 }
 
 export function parentCountLabel(parents: LinkedParent[]): string {

@@ -1,20 +1,48 @@
 'use client';
 
-import { useState } from 'react';
-import { kids } from '@/app/_data/kids';
+import { useEffect, useState } from 'react';
+import { kids as initialKids, type Kid } from '@/app/_data/kids';
 import { Sidebar } from '@/components/shared/Sidebar';
 import { MobileNav } from '@/components/shared/MobileNav';
 import { SearchIcon } from '@/components/shared/icons';
 import { KidCard } from '@/components/kids/KidCard';
+import { AddChildModal } from '@/components/kids/AddChildModal';
 
 function normalize(str: string): string {
   return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
+function loadKids(): Kid[] {
+  const base = [...initialKids];
+  if (typeof window === 'undefined') return base;
+  try {
+    const stored = localStorage.getItem('open-daycare:added-kids');
+    if (stored) {
+      const added = JSON.parse(stored) as Kid[];
+      if (added.length > 0) {
+        const ids = new Set(base.map((k) => k.id));
+        const merged = [...base];
+        for (const k of added) {
+          if (!ids.has(k.id)) {
+            merged.push(k);
+            ids.add(k.id);
+          }
+        }
+        return merged;
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return base;
+}
+
 export default function KidsPage() {
   const [query, setQuery] = useState('');
+  const [kidsList, setKidsList] = useState<Kid[]>(() => loadKids());
+  const [isAddChildOpen, setIsAddChildOpen] = useState(false);
 
-  const filtered = kids.filter((kid) =>
+  const filtered = kidsList.filter((kid) =>
     normalize(kid.fullName).includes(normalize(query))
   );
 
@@ -33,8 +61,9 @@ export default function KidsPage() {
                 Niños
               </h1>
             </div>
-            <a
-              href="#"
+            <button
+              type="button"
+              onClick={() => setIsAddChildOpen(true)}
               className="flex items-center gap-2 px-[18px] py-[11px] rounded-[14px] bg-gradient-to-b from-[#F4977E] to-[#EE8164] text-white font-extrabold text-[14.5px] shadow-[0_8px_18px_-8px_rgba(238,129,100,0.7)]"
             >
               <svg
@@ -50,7 +79,7 @@ export default function KidsPage() {
                 <path d="M12 5v14M5 12h14" />
               </svg>
               Agregar niño
-            </a>
+            </button>
           </div>
 
           <div className="flex items-center gap-[11px] bg-card border border-line rounded-[14px] px-4 py-3 mb-[22px]">
@@ -80,6 +109,28 @@ export default function KidsPage() {
           </div>
         </div>
       </main>
+      <AddChildModal
+        open={isAddChildOpen}
+        existingKids={kidsList}
+        onClose={() => setIsAddChildOpen(false)}
+        onSave={(kid) => {
+          setKidsList((prev) => {
+            const next = [...prev, kid];
+            try {
+              const stored = localStorage.getItem('open-daycare:added-kids');
+              const added = stored ? (JSON.parse(stored) as Kid[]) : [];
+              localStorage.setItem(
+                'open-daycare:added-kids',
+                JSON.stringify([...added.filter((a) => a.id !== kid.id), kid])
+              );
+            } catch {
+              // ignore
+            }
+            return next;
+          });
+          setIsAddChildOpen(false);
+        }}
+      />
     </div>
   );
 }
