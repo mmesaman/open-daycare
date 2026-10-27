@@ -1,29 +1,39 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@theme {
+  --color-canvas: #f6ecdf;
+  --color-ink: #3f362e;
+  --color-card: #fffdf9;
+  --color-line: #ece0d0;
+  --color-accent: #d9583c;
+  --color-accent-soft: #f2937a;
+  --color-accent-warm: #ee8164;
+  --color-staff: #2e89a6;
+  --color-staff-deep: #1f7a93;
+  --color-achievement: #3e9b6c;
+  --color-announcement: #4e72c8;
+  --color-muted: #a89a8b;
+  --color-soft: #fbe3d8;
+  --color-allergy-warm: #fbd8cc;
+  --color-allergy-pink: #f9d2de;
+  --color-parent-active: #cfebd8;
+  --color-parent-pending: #f7e7a6;
+  --color-canvas-warm: #fbf4ec;
+}
 
 @theme inline {
-  --font-sans: var(--font-nunito);
-  --font-display: var(--font-fredoka);
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
+  --font-head: var(--font-fredoka);
+  --font-body: var(--font-nunito);
 }
 
 body {
-  background: #f6ecdf;
-  color: #3f362e;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-nunito), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #e4d6c4;
-  border-radius: 8px;
-  border: 3px solid transparent;
-  background-clip: content-box;
+/* Kid card hover effect */
+.kid-card-hover:hover {
+  transform: translateY(-2px);
 }

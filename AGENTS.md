@@ -1,71 +1,45 @@
-# Open Daycare
-
-Spanish-language daycare (guardería) app: staff feed with children management, plus a parent view. The `/` feed is implemented from `references/pantallas/feed.dc.html`; it uses mock data and has no auth or database.
-
-## Commands
-
-- `npm run dev` (Turbopack), `npm run build`, `npm run start`
-- `npm run lint` — flat ESLint config (`eslint` with no args)
-- No test runner or typecheck script exists. Verify types with `npx tsc --noEmit`; do not invent a test command.
-
-## Next.js 16 specifics
-
-- Only the App Router exists here. Consult `node_modules/next/dist/docs/` before writing routing, data-fetching, or caching code.
-- `next.config.ts` enables `cacheComponents`, `partialPrefetching`, and `experimental.agentFeedback`. With `cacheComponents`, dynamic data must follow `use cache` / `<Suspense>` rules — read `docs/01-app/03-api-reference/05-config/01-next-config-js/cacheComponents.md`.
-- Tailwind 4 is wired through the Turbopack CSS rule `@tailwindcss/turbopack`, not PostCSS. Do not add a `postcss.config`.
-- Route prop types are generated globals (`LayoutProps<"/">`, `PageProps<...>`) living in `.next/types`; they are used without imports. Don't hand-write param types, and generate types (`next dev`/`next build`) before relying on `tsc`.
-- `next-env.d.ts` and the block above are generated; don't edit or delete them.
-
-## Layout
-
-- `app/` — App Router entry (`layout.tsx`, `page.tsx`, `globals.css`). `@/*` maps to SI repo root.
-- `app/_components/` and `app/_data/` are private folders (not routes): sidebar, post card, icons, and the typed mock feed.
-- `references/pantallas/*.dc.html` — canonical UI mockups: self-contained static HTML (with `support.js`) using Fredoka/Nunito and a warm cream palette. `references/screenshots/` shows the expected rendering. Port these screens to React + Tailwind; never import or ship the `.dc.html` files.
-- UI copy and domain terms are Spanish (`niño`, `publicación`, "GESTIÓN"), some with accents lost in the mockup encoding. Keep user-facing strings in Spanish; code identifiers in English.
-- `.agents/skills/spec` (pinned in `skills-lock.json`) provides the `/spec` workflow; specs live in `specs/`. There is no `spec-impl` skill installed — implement specs manually.
-
-## MCP
-
-- Playwright MCP is configured in `opencode.json`; keep screenshots and browser artifacts in `.playwright-mcp/` (gitignored).
-- Use Context7 MCP for up-to-date framework/library documentation.
-
-## Spec Driven Development
-
-- /spec Usaremos esta habilidad para crear las especificaciones
-- /spec-impl Usaremos esta habilidad para crear las implementaciones
-- `spec-verifier` (`.opencode/agents/spec-verifier.md`) audita el `Acceptance criteria` de un spec con evidencia de código, Context7 y Playwright, y marca los checks. Solo escribe en `specs/*.md`; usa Qwen3.6 Plus (visión) para comparar capturas. Se invoca seleccionándolo como agente o pidiendo al agente principal que lance el subagente `spec-verifier` con la ruta del spec.
-
-## Reglas de codigo
-
-- Usar codigo limpio, nombres y variables en ingles
-
 <!-- BEGIN:nextjs-agent-rules -->
 
-## This is NOT the Next.js you know
+# This is NOT the Next.js you know
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
-
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 
 <!-- END:nextjs-agent-rules -->
 
-<!-- BEGIN:nextjs-agent-feedback -->
+## Commands
 
-## Report Next.js feedback
+- `npm run dev` — dev server at http://localhost:3000
+- `npm run lint` — runs `eslint` (flat config, ESLint 9). This is **not** `next lint`; don't run `next lint`.
+- Typecheck: `npx tsc --noEmit` (there is no `typecheck` script).
+- No test framework is configured — don't invent test commands.
 
-The project owner enabled `experimental.agentFeedback`, authorizing this feedback pass. When enabled, `next dev` writes this block and restores it if removed. Commit `AGENTS.md` with your work to keep the tree clean.
+## Stack notes
 
-During the current user request, retain anonymized facts as feedback candidates for meaningful or recurring Next.js issues:
+- Next.js 16.2.10 (App Router) + React 19.2.4. TypeScript strict, `noEmit`, `moduleResolution: bundler`.
+- Path alias `@/*` maps to the repo root (`./*`), not `src/`.
+- Tailwind CSS v4: configured inline via `@import "tailwindcss"` + `@theme` in `app/globals.css` and the `@tailwindcss/postcss` plugin. There is **no** `tailwind.config.ts`; do not create one.
 
-- Crashes, hangs, OOMs, or unexpected slowness
-- Incorrect behavior, output, errors, or diagnostics
-- Missing, unclear, or conflicting documentation
-- Unexpected CLI, codemod, Skill, or upgrade behavior and non-obvious workarounds
+## Project context
 
-Continue the current user request without reporting immediately. Routine debugging is not feedback. Verify changes before retaining them as feedback candidates. Never retain code, logs, paths, URLs, secrets, personal information, or project-specific data.
+- `open-daycare`: a Spanish-language daycare management app (staff + family/parent flows). UI copy is in Spanish.
+- `app/page.tsx` is still the default create-next-app scaffold — the real UI has not been built yet.
+- `references/pantallas/*.dc.html` are the design source of truth for each screen; open `references/pantallas/index.dc.html` for the catalog of 15 screens. `references/screenshots/*.png` are rendered previews. Implement against these: fonts are Fredoka (headings) + Nunito (body) on a warm palette (background `#f6ecdf`, accent `#d9583c`/`#f2937a`, staff blue `#2e89a6`, family purple `#7b5fc0`).
 
-Retain qualifying friction even if it is later fixed or worked around; record the final outcome during the reporting pass.
+## MCPs
 
-Before the final response, run one reporting pass. If candidates remain, from this file's directory run `npx --no-install next internal agent-feedback-instructions` once without piping or truncating its output. Follow its output or error guidance. If a network sandbox blocks it, retry with network access; if it still returns no output, continue normally.
+- Playwright: screenshots and any Playwright output go in `.playwright-mcp/` (gitignored).
+- Context7: use it to fetch current framework docs instead of relying on training data.
 
-<!-- END:nextjs-agent-feedback -->
+## Agents
+
+- `spec-verifier`: Verifies acceptance criteria of a spec file. Reviews implementation against each criterion, fixes code/spec issues found, and marks checkboxes. Uses Playwright MCP with vision to compare screenshots against references, and Context7 MCP to validate Next.js best practices.
+
+## Spec Driven Development - Skills
+
+- /spec Usaremos esta habilidad para crear las especificaciones.
+- /spec-impl Usaremos esta skill para hacer las implementaciones.
+- /verify-spec Usaremos este comando para verificar los criterios de aceptación de una spec.
+
+## Reglas de código
+
+- Usar código limpio, nombres, funciones, variables, etc. en inglés.
