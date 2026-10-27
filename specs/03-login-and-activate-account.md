@@ -1,6 +1,6 @@
 # SPEC 03 — Pantallas de Login y Activar cuenta
 
-> **Estado:** Draft
+> **Estado:** Implemented
 > **Depende de:** SPEC 01 (Home Feed estático)
 > **Fecha:** 2026-10-27
 > **Objetivo:** Implementar las pantallas de inicio de sesión (`/login`) y activación de cuenta (`/activar-cuenta`) como calco visual de `references/pantallas/login.dc.html` y `references/pantallas/activar-cuenta.dc.html`, sin selector de rol en login y con navegación funcional entre ambas.
