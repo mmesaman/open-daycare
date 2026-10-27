@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { kids as initialKids, type Kid } from '@/app/_data/kids';
 import { Sidebar } from '@/components/shared/Sidebar';
 import { MobileNav } from '@/components/shared/MobileNav';
@@ -12,34 +12,9 @@ function normalize(str: string): string {
   return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
 
-function loadKids(): Kid[] {
-  const base = [...initialKids];
-  if (typeof window === 'undefined') return base;
-  try {
-    const stored = localStorage.getItem('open-daycare:added-kids');
-    if (stored) {
-      const added = JSON.parse(stored) as Kid[];
-      if (added.length > 0) {
-        const ids = new Set(base.map((k) => k.id));
-        const merged = [...base];
-        for (const k of added) {
-          if (!ids.has(k.id)) {
-            merged.push(k);
-            ids.add(k.id);
-          }
-        }
-        return merged;
-      }
-    }
-  } catch {
-    // ignore
-  }
-  return base;
-}
-
 export default function KidsPage() {
   const [query, setQuery] = useState('');
-  const [kidsList, setKidsList] = useState<Kid[]>(() => loadKids());
+  const [kidsList, setKidsList] = useState<Kid[]>(() => [...initialKids]);
   const [isAddChildOpen, setIsAddChildOpen] = useState(false);
 
   const filtered = kidsList.filter((kid) =>
@@ -114,20 +89,7 @@ export default function KidsPage() {
         existingKids={kidsList}
         onClose={() => setIsAddChildOpen(false)}
         onSave={(kid) => {
-          setKidsList((prev) => {
-            const next = [...prev, kid];
-            try {
-              const stored = localStorage.getItem('open-daycare:added-kids');
-              const added = stored ? (JSON.parse(stored) as Kid[]) : [];
-              localStorage.setItem(
-                'open-daycare:added-kids',
-                JSON.stringify([...added.filter((a) => a.id !== kid.id), kid])
-              );
-            } catch {
-              // ignore
-            }
-            return next;
-          });
+          setKidsList((prev) => [...prev, kid]);
           setIsAddChildOpen(false);
         }}
       />

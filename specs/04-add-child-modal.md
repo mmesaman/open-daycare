@@ -99,21 +99,21 @@ Al guardar, se construirá un objeto `Kid` con la siguiente forma:
 
 ## Acceptance criteria
 
-- [ ] El botón `Agregar niño` in `http://localhost:3000/kids` abre el modal "Agregar niño".
-- [ ] El modal replica la estructura visual de `agregar-nino.dc.html` (cabecera with Cancelar/Agregar niño/Guardar, campos and estilos coherentes).
-- [ ] Los campos obligatorios son Nombre completo, Fecha de nacimiento and Sala. Alergias and Notas médicas are opcionales.
-- [ ] La Sala se muestra fija a `Soles` and no is editable.
-- [ ] El campo Fecha de nacimiento tiene máscara `dd/mm/aaaa` and valida fecha real (días válidos by mes/año, including bisiestos) and that no sea futura.
-- [ ] `Cancelar` cierra el modal and descarta los cambios sin confirmación.
-- [ ] With validation correcta, `Guardar` crea el niño, lo añade al listado de `/kids` in estado local and cierra el modal without recargar la página.
-- [ ] El nuevo niño es navegable a `/kids/[id]` and muestra los datos básicos coherentes with el modelo (`fullName`, `age`, `room`, `allergies`, `medicalNotes`, `linkedParents: []`).
-- [ ] El `id` se genera by slug del nombre completo (sin acentos/espacios), with sufijo numérico if hay colisión.
-- [ ] Las alergias with palabras clave (`maní`/`peanut`, `lactosa`/`lactose`, `gluten`) se mapean to `AllergyType[]` and muestran badge in `KidCard` if aplica.
-- [ ] El texto de alergias no mapeado se conserva (in `medicalNotes` or sin generar badge) without romper el renderizado.
-- [ ] Los datos añadidos solo existen in estado local (se pierden al recargar la página).
-- [ ] `npm run lint` pasa sin errores.
-- [ ] `npx tsc --noEmit` pasa sin errores.
-- [ ] No hay errores in consola del navegador al abrir, validar, guardar and cancelar el modal.
+- [x] El botón `Agregar niño` in `http://localhost:3000/kids` abre el modal "Agregar niño".
+- [x] El modal replica la estructura visual de `agregar-nino.dc.html` (cabecera with Cancelar/Agregar niño/Guardar, campos and estilos coherentes).
+- [x] Los campos obligatorios son Nombre completo, Fecha de nacimiento and Sala. Alergias and Notas médicas are opcionales.
+- [x] La Sala se muestra fija a `Soles` and no is editable.
+- [x] El campo Fecha de nacimiento tiene máscara `dd/mm/aaaa` and valida fecha real (días válidos by mes/año, including bisiestos) and that no sea futura.
+- [x] `Cancelar` cierra el modal and descarta los cambios sin confirmación.
+- [x] With validation correcta, `Guardar` crea el niño, lo añade al listado de `/kids` in estado local and cierra el modal without recargar la página.
+- [x] El nuevo niño es navegable a `/kids/[id]` and muestra los datos básicos coherentes with el modelo (`fullName`, `age`, `room`, `allergies`, `medicalNotes`, `linkedParents: []`).
+- [x] El `id` se genera by slug del nombre completo (sin acentos/espacios), with sufijo numérico if hay colisión.
+- [x] Las alergias with palabras clave (`maní`/`peanut`, `lactosa`/`lactose`, `gluten`) se mapean to `AllergyType[]` and muestran badge in `KidCard` if aplica.
+- [x] El texto de alergias no mapeado se conserva (in `medicalNotes` or sin generar badge) without romper el renderizado.
+- [x] Los datos añadidos solo existen in estado local (se pierden al recargar la página).
+- [x] `npm run lint` pasa sin errores.
+- [x] `npx tsc --noEmit` pasa sin errores.
+- [x] No hay errores in consola del navegador al abrir, validar, guardar and cancelar el modal.
 
 ## Decisions
 
